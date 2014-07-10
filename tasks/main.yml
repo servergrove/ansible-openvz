@@ -1,0 +1,17 @@
+---
+  - name: Install OpenVZ repo
+    get_url: url=http://ftp.openvz.org/openvz.repo dest=/etc/yum.repos.d/openvz.repo mode=0440
+  - name: Import GPG key
+    shell: rpm --import http://ftp.openvz.org/RPM-GPG-Key-OpenVZ
+  - name: Install OpenVZ
+    yum: name=vzkernel state=present
+  - name: Install Openvz RPM Packages
+    yum: name={{item}}
+    with_items: install_packages
+  - name: Disable SELinux
+    selinux: state=disabled
+  - name: Enable OpenVZ
+    service: name=vz enabled=true
+  - name: Download CentOS 6.x template
+    get_url: url=http://download.openvz.org/template/precreated/centos-6-x86_64.tar.gz dest=/vz/template/centos-6-x86_64.tar.gz mode=0440
+
